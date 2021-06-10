@@ -14,7 +14,6 @@ const checkSchemeId = async (req, res, next) => {
 
   try {
     const isIdValid = await db('schemes').where('scheme_id', scheme_id).first()
-    console.log(isIdValid)
 
     if (isIdValid === undefined) {
       error.status = 404
@@ -68,20 +67,18 @@ const validateScheme = (req, res, next) => {
 const validateStep = (req, res, next) => {
   const {instructions, step_number} = req.body
 
-  
-    if (
-      !instructions ||
-      instructions === undefined ||
-      typeof instructions !== 'string' ||
-      typeof step_number === 'number' ||
-      step_number < 1
-    ) {
-      next({status: 400, message: 'invalid step'})
-    }else{
-      next
-    }
- 
-
+  if (
+    !instructions ||
+    instructions === undefined ||
+    typeof instructions !== 'string' ||
+    typeof step_number === 'number' ||
+    step_number < 1
+  ) {
+    next({status: 400, message: 'invalid step'})
+  } else {
+    next
+  }
+}
 
 module.exports = {
   checkSchemeId,

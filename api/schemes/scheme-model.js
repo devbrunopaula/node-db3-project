@@ -100,50 +100,27 @@ async function findById(scheme_id) {
   */
 
   const data = await db('schemes as sc')
-    .select('sc.scheme_name', 'st.*')
+    .select('*')
     .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
     .where('sc.scheme_id', scheme_id)
     .orderBy('st.step_number', 'asc')
-
-  let newData = {}
-  let steps = []
+  let newData = {
+    scheme_id: data[0].scheme_id,
+    scheme_name: data[0].scheme_name,
+    steps: [],
+  }
 
   data.map((el) => {
-    newData['scheme_id'] = el.scheme_id
-    newData['scheme_name'] = el.scheme_name
-    steps.push({
-      step_id: el.step_id,
-      step_number: el.step_number,
-      instructions: el.instructions,
-    })
+    if (el.step_id) {
+      newData.steps.push({
+        step_id: el.step_id,
+        step_number: el.step_number,
+        instructions: el.instructions,
+      })
+    }
   })
 
-  newData = {...newData, steps}
   return newData
-  //newData['scheme_id'] = scheme_id
-  //newData[data] = scheme_id
-  // (newData[data.scheme_id] = data.scheme_name),
-  // (newData.steps = steps)
-  // console.log(newData)
-  // return newData
-
-  //  {
-  //         "scheme_id": 1,
-  //         "scheme_name": "World Domination",
-  //         "steps": [
-  //           {
-  //             "step_id": 2,
-  //             "step_number": 1,
-  //             "instructions": "solve prime number theory"
-  //           },
-  //           {
-  //             "step_id": 1,
-  //             "step_number": 2,
-  //             "instructions": "crack cyber security"
-  //           },
-  //           // etc
-  //         ]
-  //       }
 }
 
 function findSteps(scheme_id) {
